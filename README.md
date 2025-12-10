@@ -1,5 +1,5 @@
-# BrainSeg: A Generalized Framework for Comprehensive Multimodal Brain Tissue Segmentation, Parcellation, and Lesion Labeling
-Official implementation code for BrainSeg. We proposes a novel AI-based tool for comprehensive brain imaging segmentation with generalizability across multiple modalities, including MRI, CT, PET, and ultrasound, as well as across the lifespan (from neonates to the elderly). This framework consists of three main components: B-Syn, B-CLIP, and BrainSeg.
+# 🧠 BrainSeg: A Generalized Framework for Comprehensive Multimodal Brain Tissue Segmentation, Parcellation, and Lesion Labeling
+Official implementation code for BrainSeg. We propose a novel AI-based tool for comprehensive brain imaging segmentation with generalizability across multiple modalities, including MRI, CT, PET, and ultrasound, as well as across the lifespan (from neonates to the elderly). This framework consists of three main components: B-Syn, B-CLIP, and BrainSeg.
 
 ***
 ## Model overview
@@ -13,10 +13,23 @@ Official implementation code for BrainSeg. We proposes a novel AI-based tool for
 </div>
 
 ***
+# 🛠️ Installation
+To ensure a clean workspace and prevent dependency conflicts, we strongly recommend creating a new Conda environment before running the code.
+## 1. Create and Activate Environment
+```bash
+# Create a new conda environment named 'brainseg' with Python 3.9
+conda create -n brainseg python=3.9 -y
+
+# Activate the environment
+conda activate brainseg
+
+# Install the required libraries
+pip install -r requirements.txt
+```
 
 ***
 # Get started with B-Syn and B-CLIP
-## Step 1: Set up the environment for BiomedCLIP
+## ⚙️ Step 1: Set up the environment for BiomedCLIP
 Our B-CLIP fine-tunes BiomedCLIP text encoder based on LoRA, so you need to first configure the Biomedical environment: 
 
 **1. First clone the latest BiomedCLIP model (the commit version we used is 27005c2, and earlier versions may have compatibility issues)**
@@ -58,7 +71,7 @@ model, preprocess = create_model_from_pretrained('hf-hub:microsoft/BiomedCLIP-Pu
 tokenizer = get_tokenizer('hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224', 
                          cache_dir='/your/path/to/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224')
 ```
-## Step 2: Preparation your data to train B-CLIP
+## 📂 Step 2: Prepare your data to train B-CLIP
 You can organize your file directory as follows to train B-CLIP on your own data
 ```bash
 prompt.xlsx                     # excel for text metadata
@@ -67,7 +80,7 @@ lesion_parameter.xlsx           # excel for lesion parameter, used for lesion sy
 data/
 ├── subject001/
 │   ├── brain.nii.gz            # brain image
-│   ├── tissue.nii.hz           # tissue map GT
+│   ├── tissue.nii.gz           # tissue map GT
 │   ├── dk-struct.nii.gz        # roi map GT
 │   ├── T2-brain.nii.gz         # T2 modality image, if have
 │   ├── CT-brain.nii.gz         # CT modality image, if have
@@ -78,7 +91,7 @@ data/
 lesion/
 ├── subject01/
 │   ├── brain.nii.gz            # brain image
-│   ├── lesion.nii.hz           # lesion map GT
+│   ├── lesion.nii.gz           # lesion map GT
 │   ├── Flair-brain.nii.gz      # T2-FLAIR modality image, if have
 │   ├── T2-brain.nii.gz         # T2 modality image, if have
 │   ├── ……                      # other modality image, if have
@@ -86,40 +99,38 @@ lesion/
 ├── subject03
 └── ……
 ```
-## Step 3: Train B-CLIP
+## 🚀 Step 3: Train B-CLIP
 Now you can start training B-CLIP. You can choose to train from scratch or load our pre-trained model of B-CLIP for fine-tuning. You can download our pretrained B-CLIP model through the following link: [BCLIP](https://drive.google.com/file/d/1yXsnsFRHFc_uZ84JoWh8wF63WGZjDdNh/view?usp=drive_link)
 ```bash
 python /BCLIP/train.py  # Please change the path in the code to the path of your own data
 ```
 
 ***
-
-***
 # Get started with BrainSeg
-## Step 1: Data prepocessing
+## 📂 Step 1: Data preprocessing
 Before starting training, we recommend that you preprocess the data. We suggest you use the same preprocessing steps as us, including registering all images to the MNI space and performing skull stripping. Then crop the image to (224, 256, 224). 
 After preprocessing, your data directory should be structured to match the B-CLIP training format
 
-## Step 2: Train BrainSeg
+## 🚀 Step 2: Train BrainSeg
 Now you can start training BrainSeg. You can choose to train from scratch or load our pre-trained model of BrainSeg for fine-tuning. You can download our pretrained BrainSeg model through the following link: [BrainSeg_tissue](https://drive.google.com/file/d/1oHgnOyCLNxjO3tn2iKG54-cyIEsKkVNS/view?usp=drive_link) for tissue segmentation, [BrainSeg_parc](https://drive.google.com/file/d/13Vl_3yaOgaWhUhdkS2IekR-sQnV4oCrA/view?usp=drive_link) for brain parcellation and [BrainSeg_lesion](https://drive.google.com/file/d/1qnw8pV1c6n0_kwUJx9iQXCJvDboFmxce/view?usp=drive_link) for lesion labeling
 ```bash
 python train.py  # Please change the path in the code to the path of your own data
 ```
 
 ## Step 3: Inference using our pretrained model
-We provide a set of example samples covering **diverse age groups, multiple modalities, and lesion cases** in [Sample](./Sample). You can run inference directly on these samples using our pre-trained model. You can also test on your own data, provided it is structured as follows:
+We provide a set of example samples covering **diverse age groups, multiple modalities, and lesion cases** in [Sample](./Sample) and a default text metadata prompt for the sample data in [test.xlsx](./test.xlsx). You can run inference directly on these samples using our pre-trained model. You can also test on your own data, provided it is structured as follows:
 ```bash
-test.xlxs                   # text metadata prompt
+test.xlsx                   # text metadata prompt
 Sample/
 ├── sub001/
 │   ├── brain.nii.gz        
-│   ├── tissue.nii.hz        
+│   ├── tissue.nii.gz        
 │   ├── dk-struct.nii.gz     
 │   ├── T2-brain.nii.gz            
 │   ├── ……                  # any other modalities, if have                       
 ├── sub002/
 │   ├── brain.nii.gz        
-│   ├── tissue.nii.hz        
+│   ├── tissue.nii.gz        
 │   ├── dk-struct.nii.gz       
 │   ├── CT-brain.nii.gz        
 │   ├── ……                  # any other modalities, if have
@@ -129,7 +140,17 @@ Sample/
 ### 1. Tissue segmentation
 You can run tissue segmentation inference using the following command:
 ```bash
-python inference.py --texts_path ./test.xlsx --images_path ./Sample --img_size 224 256 224 --in_channels 6 --out_channels 4 --model_dir /your/path/for/BrainSeg_model --clip_dir /your/path/for/BCLIP --predir ./Sample --mode tissue --flag multi
+python inference.py \
+    --texts_path ./test.xlsx \
+    --images_path ./Sample \
+    --predir ./Sample \
+    --model_dir /your/path/for/BrainSeg_model \
+    --clip_dir /your/path/for/BCLIP \
+    --img_size 224 256 224 \
+    --in_channels 6 \
+    --out_channels 4 \
+    --mode tissue \
+    --flag multi
 ```
 *
     * `--texts_path`: Path to the Excel file (`.xlsx`) containing text prompts (Default: `./test.xlsx`)
@@ -150,18 +171,35 @@ python inference.py --texts_path ./test.xlsx --images_path ./Sample --img_size 2
 ### 2. Brain Parcellation
 You can run brain parcellation inference using the following command:
 ```bash
-python inference.py --texts_path ./test.xlsx --images_path ./Sample --img_size 224 256 224 --in_channels 7 --out_channels 107 --model_dir /your/path/for/BrainSeg_model --clip_dir /your/path/for/BCLIP --predir ./Sample --mode dk
+python inference.py \
+    --texts_path ./test.xlsx \
+    --images_path ./Sample \
+    --predir ./Sample \
+    --model_dir /your/path/for/BrainSeg_model \
+    --clip_dir /your/path/for/BCLIP \
+    --img_size 224 256 224 \
+    --in_channels 7 \
+    --out_channels 107 \
+    --mode dk
 ```
 
 ### 3. Lesion labeling
 You can run lesion labeling inference using the following command:
 ```bash
-python inference.py --texts_path ./test.xlsx --images_path ./Sample --img_size 224 256 224 --in_channels 6 --out_channels 4 --model_dir /your/path/for/BrainSeg_model --clip_dir /your/path/for/BCLIP --predir ./Sample --mode lesion
+python inference.py \
+    --texts_path ./test.xlsx \
+    --images_path ./Sample \
+    --predir ./Sample \
+    --model_dir /your/path/for/BrainSeg_model \
+    --clip_dir /your/path/for/BCLIP \
+    --img_size 224 256 224 \
+    --in_channels 6 \
+    --out_channels 4 \
+    --mode lesion
 ```
 
 ***
-
-# Citation
+# 📖 Citation
 If you find this work useful in your research, please cite:
 > **Shijie Huang<sup>†</sup>, Zifeng Lian<sup>†</sup>, Dengqiang Jia<sup>†</sup>, Kaicong Sun<sup>†</sup>, Xiaoye Li<sup>†</sup>, Jiameng Liu<sup>†</sup>, Yulin Wang, Caiwen Jiang, Fangmei Zhu, Zhongxiang Ding, Han Zhang, Geng Chen<sup>&ast;</sup>, Feng Shi<sup>&ast;</sup>, Dinggang Shen<sup>&ast;</sup>. BrainSeg: A Generalized Framework for Comprehensive Multimodal Brain Tissue Segmentation, Parcellation, and Lesion Labeling. (Under Review)**
 
