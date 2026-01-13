@@ -29,6 +29,34 @@ pip install -r requirements.txt
 
 ***
 # Get started with B-Syn
+We provide a [demo](./BSyn/BSyn/BSyn_Demo.py) script for immediate testing and usage.
+
+## 🧪 Quick Start
+First, navigate to the B-Syn source directory:
+```bash
+cd ./BSyn/BSyn/
+```
+
+**1. Multimodal Synthesis**
+
+You can synthesize images for different modalities by specifying the target output filename. Please refer to our function arguments in the code for a full list of supported modality parameters. For example, to generate a T2-weighted MRI image:
+```bash
+python BSyn_Demo.py --modality T2-brain.nii.gz
+```
+
+**2. Lesion Synthesis**
+
+B-Syn supports the simulation of pathological features, such as tumors and strokes. You can control the pathology type using the --lesion_type argument.
+
+**Generate Tumor data**
+```bash
+python BSyn_Demo.py --modality Flair-brain.nii.gz --lesion_type tumor
+```
+
+**Generate Stroke data**
+```bash
+python BSyn_Demo.py --modality DWI-brain.nii.gz --lesion_type stroke
+```
 
 ***
 # Get started with B-CLIP
@@ -111,8 +139,7 @@ python /BCLIP/train.py  # Please change the path in the code to the path of your
 ***
 # Get started with BrainSeg
 ## 📂 Step 1: Data preprocessing
-Before starting training, you should preprocess your data following the same steps as ours, including registering all images to the MNI space, performing skull stripping, and cropping the images to (224, 256, 224). 
-After preprocessing, your data directory should be structured to match the B-CLIP training format
+Before starting training, you should preprocess your data following the same steps as ours, including performing bias field correction and skull stripping, registering all images to the MNI space, reorientation to a consistent RPI coordinate system, and cropping the images to (224, 256, 224). We provide a [preprocessing](./preprocessing.py) script to facilitate these steps. After preprocessing, your data directory should be structured to match the B-CLIP training format.
 
 ## 🚀 Step 2: Train BrainSeg
 Now you can start training BrainSeg. You can choose to train from scratch or load our pre-trained model of BrainSeg for fine-tuning. You can download our pretrained BrainSeg model through the following link: [BrainSeg_tissue](https://drive.google.com/file/d/1oHgnOyCLNxjO3tn2iKG54-cyIEsKkVNS/view?usp=drive_link) for tissue segmentation, [BrainSeg_parc](https://drive.google.com/file/d/13Vl_3yaOgaWhUhdkS2IekR-sQnV4oCrA/view?usp=drive_link) for brain parcellation and [BrainSeg_lesion](https://drive.google.com/file/d/1qnw8pV1c6n0_kwUJx9iQXCJvDboFmxce/view?usp=drive_link) for lesion labeling
@@ -204,7 +231,7 @@ python inference.py \
 ***
 # 📖 Citation
 If you find this work useful in your research, please cite:
-> **Shijie Huang<sup>†</sup>, Zifeng Lian<sup>†</sup>, Dengqiang Jia<sup>†</sup>, Kaicong Sun<sup>†</sup>, Xiaoye Li<sup>†</sup>, Jiameng Liu<sup>†</sup>, Yulin Wang, Caiwen Jiang, Fangmei Zhu, Zhongxiang Ding, Han Zhang, Geng Chen<sup>&ast;</sup>, Feng Shi<sup>&ast;</sup>, Dinggang Shen<sup>&ast;</sup>. BrainSeg: A Generalized Framework for Comprehensive Multimodal Brain Tissue Segmentation, Parcellation, and Lesion Labeling. (Under Review)**
+> **Shijie Huang<sup>†</sup>, Zifeng Lian<sup>†</sup>, Dengqiang Jia<sup>†</sup>, Kaicong Sun<sup>†</sup>, Xiaoye Li<sup>†</sup>, Jiameng Liu<sup>†</sup>, Yulin Wang, Caiwen Jiang, Fangmei Zhu, Zhongxiang Ding<sup>&ast;</sup>, Han Zhang<sup>&ast;</sup>, Geng Chen<sup>&ast;</sup>, Feng Shi<sup>&ast;</sup>, Dinggang Shen<sup>&ast;</sup>. BrainSeg: A Generalized Framework for Comprehensive Multimodal Brain Tissue Segmentation, Parcellation, and Lesion Labeling. (Under Review)**
 
 # [<font color=#F8B48F size=3>License</font> ](./LICENSE)
 ```shell
