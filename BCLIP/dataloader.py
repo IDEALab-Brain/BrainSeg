@@ -8,7 +8,8 @@ from testencoder import load_text_encoder
 import random
 import re
 from monai.transforms import Compose, NormalizeIntensityd
-from ..BSyn import *
+from ..BSyn.BSyn.syn import *
+
 
 # Downsample the image by half to save the GPU memory.
 def process_image(image):
