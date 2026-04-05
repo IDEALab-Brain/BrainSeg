@@ -17,14 +17,12 @@ Official implementation code for BrainSeg. We propose a novel AI-based tool for 
 To ensure a clean workspace and prevent dependency conflicts, we strongly recommend creating a new Conda environment before running the code.
 ## 1. Create and Activate Environment
 ```bash
-# Create a new conda environment named 'brainseg' with Python 3.9
-conda create -n brainseg python=3.9 -y
+# Create a new conda environment named 'BrainSeg' with Python 3.9 and install the required libraries
+cd /your/path/to/this/repository
+conda env create -f environment.yml -n BrainSeg
 
 # Activate the environment
-conda activate brainseg
-
-# Install the required libraries
-pip install -r requirements.txt
+conda activate BrainSeg
 ```
 
 ***
@@ -65,19 +63,19 @@ Our B-CLIP fine-tunes BiomedCLIP text encoder based on LoRA, so you need to firs
 
 **1. First clone the latest BiomedCLIP model (the commit version we used is 27005c2, and earlier versions may have compatibility issues)**
 ```bash
-cd /your/path/to/BiomedCLIP
+mkdir BiomedCLIP
+cd ./BiomedCLIP
 git clone https://huggingface.co/microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224
 ```
 **2. And then clone the latest BiomedBERT-abstract**
 ```bash
-cd /your/path/to/BiomedBERT-abstract
+mkdir BiomedBERT-abstract
+cd ./BiomedBERT-abstract
 git clone https://huggingface.co/microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract
 ```
-**3. Install the specific version of open_clip_torch**
-```bash
-pip install open_clip_torch==2.23.0 transformers==4.35.2 matplotlib
-```
-**4. To invoke your local path of Biomedical, you need to make a little modification to the source code of open-clip. Please follow: https://github.com/mlfoundations/open_clip/issues/772#issuecomment-1884355134**
+**3. If you encounter network issues when running `git clone`, we also provide the already downloaded folders for convenience through the following links: [BiomedCLIP](https://drive.google.com/drive/folders/1cWMRxmZE_a8KmciztBfyG5vLapdjPDXh?usp=sharing) and [BiomedBERT-abstract](https://drive.google.com/drive/folders/1OZXy5kvih6ESLo0LYq-bvudYcGRYCM82?usp=sharing).**
+
+**4. To invoke your own local path of Biomedical, you need to make a little modification to the source code of open-clip. Please follow: https://github.com/mlfoundations/open_clip/issues/772#issuecomment-1884355134**
 
 **5. Finally modify the model configuration to enable the text encoder to output tokens. In /your/path/to/BiomedCLIP/open_clip_config.json, add the setting of output_tokens to the "text_cfg" dictionary**
 
@@ -96,11 +94,13 @@ pip install open_clip_torch==2.23.0 transformers==4.35.2 matplotlib
 ```
 **6. Now you can load the Biomedical model like this:**
 ```bash
-model, preprocess = create_model_from_pretrained('hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224',
-                         cache_dir='/your/path/to/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224')
-
-tokenizer = get_tokenizer('hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224', 
-                         cache_dir='/your/path/to/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224')
+model, preprocess = open_clip.create_model_from_pretrained(
+    'hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224',
+    pretrained='/your/path/to/BiomedCLIP/open_clip_pytorch_model.bin',
+    cache_dir='/your/path/to/BiomedCLIP')
+tokenizer = open_clip.get_tokenizer(
+    model_name='hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224',
+    cache_dir='/your/path/to/BiomedCLIP')
 ```
 ## 📂 Step 2: Prepare your data to train B-CLIP
 You can organize your file directory as follows to train B-CLIP on your own data
@@ -139,7 +139,7 @@ python /BCLIP/train.py  # Please change the path in the code to the path of your
 ***
 # Get started with BrainSeg
 ## 📂 Step 1: Data preprocessing
-Before starting training, you should preprocess your data following the same steps as ours, including performing bias field correction and skull stripping, registering all images to the MNI space, reorientation to a consistent RPI coordinate system, and cropping the images to (224, 256, 224). We provide a [preprocessing](./preprocessing.py) script to facilitate these steps. After preprocessing, your data directory should be structured to match the B-CLIP training format.
+Before starting training, you should preprocess your data following the same steps as ours, including performing bias field correction and skull stripping, registering all images to the space consistent with our training data, reorientation to a consistent RPI coordinate system, and cropping the images to (224, 256, 224). We provide a [preprocessing](./preprocessing.py) script to facilitate these steps. After preprocessing, your data directory should be structured to match the B-CLIP training format.
 
 ## 🚀 Step 2: Train BrainSeg
 Now you can start training BrainSeg. You can choose to train from scratch or load our pre-trained model of BrainSeg for fine-tuning. You can download our pretrained BrainSeg model through the following link: [BrainSeg_tissue](https://drive.google.com/file/d/1oHgnOyCLNxjO3tn2iKG54-cyIEsKkVNS/view?usp=drive_link) for tissue segmentation, [BrainSeg_parc](https://drive.google.com/file/d/13Vl_3yaOgaWhUhdkS2IekR-sQnV4oCrA/view?usp=drive_link) for brain parcellation and [BrainSeg_lesion](https://drive.google.com/file/d/1qnw8pV1c6n0_kwUJx9iQXCJvDboFmxce/view?usp=drive_link) for lesion labeling
