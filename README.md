@@ -12,6 +12,25 @@ Official implementation code for BrainSeg. We propose a novel AI-based tool for 
   <img src="figures/results.png" width="100%" alt="Results">
 </div>
 
+
+***
+***
+# 🐳 Docker Quick Start
+
+We provide a ready-to-use Docker image for BrainSeg inference, which packages the runtime environment, offline B-CLIP dependencies, pretrained checkpoints, and the MNI template. Users can run preprocessing, metadata generation, tissue segmentation, brain parcellation, and lesion labeling with simple commands, without manually configuring the environment. All outputs are saved under `<input>/work/`, and no internet connection is required during inference.
+
+Pull the image from Docker Hub:
+```bash
+docker pull brainseg/brainseg:v1
+```
+
+Example tissue segmentation:
+```bash
+docker run --rm --gpus all -v /path/to/YourData:/workspace/data brainseg/brainseg:v1 tissue --input /workspace/data
+```
+
+Note: input images should be skull-stripped before running BrainSeg. For CPU-only inference, remove `--gpus all` and add `--device cpu`.
+
 ***
 # 🛠️ Installation
 To ensure a clean workspace and prevent dependency conflicts, we strongly recommend creating a new Conda environment before running the code.
