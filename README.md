@@ -18,6 +18,7 @@ Official implementation code for BrainSeg. We propose a novel AI-based tool for 
 # 🐳 Docker Quick Start
 
 We provide a ready-to-use Docker image for BrainSeg inference, which packages the runtime environment, offline B-CLIP dependencies, pretrained checkpoints, and the MNI template. Users can run preprocessing, metadata generation, tissue segmentation, brain parcellation, and lesion labeling with simple commands, without manually configuring the environment. All outputs are saved under `<input>/work/`, and no internet connection is required during inference.
+For detailed Docker instructions, please refer to [Dockers/README_v1.md](https://github.com/IDEALab-Brain/BrainSeg/blob/main/Dockers/README_v1.md).
 
 Pull the image from Docker Hub:
 ```bash
